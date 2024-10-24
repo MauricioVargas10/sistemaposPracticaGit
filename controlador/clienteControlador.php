@@ -5,6 +5,7 @@ if (isset($ruta["query"])) {
   if (
     $ruta["query"] == "ctrRegCliente" ||
     $ruta["query"] == "ctrEditCliente" ||
+    $ruta["query"] == "ctrBusCliente" ||
     $ruta["query"] == "ctrEliCliente"
   ) {
     $metodo = $ruta["query"];
@@ -25,12 +26,13 @@ class ControladorCliente
   {
     require "../modelo/clienteModelo.php";
 
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-
     $data = array(
-      "logincliente" => $_POST["login"],
-      "password" => $password,
-      "perfil" => "Moderador"
+      "razonCliente" => $_POST["rsocial"],
+      "nitCliente" => $_POST["nit"],
+      "direccionCliente" => $_POST["direccion"],
+      "nombreCliente" => $_POST["nombre"],
+      "telefonoCliente" => $_POST["telefono"],
+      "gmailCliente" => $_POST["gmail"]
     );
 
     $respuesta = ModeloCliente::mdlRegCliente($data);
@@ -44,22 +46,17 @@ class ControladorCliente
     return $respuesta;
   }
 
-  static function ctrEditcliente()
-  {
+  static function ctrEditCliente(){
     require "../modelo/clienteModelo.php";
 
-    if ($_POST["password"] == $_POST["passActual"]) {
-      $password = $_POST["password"];
-    } else {
-      $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
-    }
-
-
     $data = array(
-      "password" => $password,
-      "id" => $_POST["idcliente"],
-      "perfil" => $_POST["perfil"],
-      "estado" => $_POST["estado"]
+      "id" => $_POST["idCliente"],
+      "razonCliente" => $_POST["rsocial"],
+      "nitCliente" => $_POST["nit"],
+      "direccionCliente" => $_POST["direccion"],
+      "nombreCliente" => $_POST["nombre"],
+      "telefonoCliente" => $_POST["telefono"],
+      "gmailCliente" => $_POST["gmail"]
     );
 
     ModeloCliente::mdlEditCliente($data);
@@ -68,12 +65,26 @@ class ControladorCliente
     echo $respuesta;
   }
 
-  static function ctrEliCliente()
-  {
-    require "../modelo/ClienteModelo.php";
+  static function ctrEliCliente(){
+    require "../modelo/clienteModelo.php";
     $id = $_POST["id"];
 
     $respuesta = ModeloCliente::mdlEliCliente($id);
     echo $respuesta;
   }
+
+  static function ctrBusCliente(){
+    require "../modelo/clienteModelo.php";
+    $nitCliente=$_POST["nitCliente"];
+
+    $respuesta=ModeloCliente::mdlBusCliente($nitCliente);
+    echo json_encode($respuesta);
+
+  }
+  static public function ctrCantidadClientes(){
+
+    $respuesta=ModeloCliente::mdlCantidadClientes();
+    return ($respuesta);
+    //echo $respuesta;
+}
 }
